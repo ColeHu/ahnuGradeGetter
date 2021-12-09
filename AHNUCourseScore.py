@@ -11,7 +11,7 @@ url = "http://jw.ahnu.edu.cn/student/login"     # 安徽师范大学新教务系
 loginSaltUrl = "http://jw.ahnu.edu.cn/student/login-salt"        # 获取教务系统密码加盐url
 homeUrl = "http://jw.ahnu.edu.cn/student/home"  #主页url
 checkUrl = "http://jw.ahnu.edu.cn/student/login"        # 登录提交url
-scoreUrl = "" # 成绩表url
+scoreUrl = "https://jw.ahnu.edu.cn/student/for-std/grade/sheet/info/" # 成绩表url
 
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.110 Safari/537.36",
@@ -57,9 +57,11 @@ def login(username, password):
 
 def getScore():
 
-    scorePage = req.get(scoreUrl, headers=headers_content_xml, verify=False).content.decode('utf-8')
+    s1 = req.get('https://jw.ahnu.edu.cn/student/for-std/grade/sheet', headers=headers_content_xml, verify=False)
+    stuNum = s1.url[-6:]    #获取唯一标识码
+    checkUrl = scoreUrl + stuNum + '?' + "semester=" + str(semester)    #产生成绩单链接
+    scorePage = req.get(checkUrl, headers=headers_content_xml, verify=False).content.decode('utf-8')
     scoreJSON = json.loads(scorePage)
-    print()
     return scoreJSON['semesterId2studentGrades'][semester]
 
 
@@ -75,7 +77,6 @@ if __name__ == '__main__':
     username = input("学号: ")
     password = getpass.getpass("密码(已隐藏): ")
     semester = input("请输入要查询的学期:")
-    scoreUrl = "http://jw.ahnu.edu.cn/student/for-std/grade/sheet/info/111397?semester=" + semester
     req = requests.session()
     login(username, password)
     praseScore(getScore())
