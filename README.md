@@ -1,4 +1,4 @@
-# # ahnuGrapeGetter
+#  ahnuGradeGetter
 
 安徽师范大学成绩查询，可以显示已被录入但未被publish的成绩
 
